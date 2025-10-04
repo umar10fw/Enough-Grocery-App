@@ -1,6 +1,6 @@
 
 
-import 'package:egrocery/view/common_widget/comn_widget/splash.dart';
+import 'package:egrocery/src/features/authentication/screens/splash_screen/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
