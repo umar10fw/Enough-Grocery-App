@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "name": "Grocery",
+    "image": "assets/images/basket-full-vegetables.png"
+  },
+  {
+    "id": 1,
+    "name": "Shampo",
+    "image": "assets/images/shampo.png"
+  },
+  {
+    "id": 2,
+    "name": "Surf",
+    "image": "assets/images/surf-2.png"
+  },
+  {
+    "id": 3,
+    "name": "Vegetable",
+    "image": "assets/images/vege.png"
+  },
+  {
+    "id": 0,
+    "name": "Grocery",
+    "image": "assets/images/basket-full-vegetables.png"
+  },
+  {
+    "id": 1,
+    "name": "Shampo",
+    "image": "assets/images/shampo.png"
+  },
+  {
+    "id": 2,
+    "name": "Surf",
+    "image": "assets/images/surf-2.png"
+  },
+  {
+    "id": 3,
+    "name": "Vegetable",
+    "image": "assets/images/vege.png"
+  }
+]

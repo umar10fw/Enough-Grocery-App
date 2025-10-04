@@ -1,0 +1,62 @@
+[
+  {
+    "id": 0,
+    "image": "assets/images/vege.png",
+    "name": "Grocery",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  },
+  {
+    "id": 0,
+    "image": "assets/images/basket-full-vegetables.png",
+    "name": "Vegetable",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  },
+  {
+    "id": 0,
+    "image": "assets/images/tomato.png",
+    "name": "Tomato",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  },
+  {
+    "id": 0,
+    "image": "assets/images/surf-2.png",
+    "name": "Surf",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  },
+  {
+    "id": 0,
+    "image": "assets/images/shampo.png",
+    "name": "Shampo",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  },
+  {
+    "id": 0,
+    "image": "assets/images/basket-full-vegetables.png",
+    "name": "Vegetables",
+    "subtitle": "Lorem ipsum dolor sit amet",
+    "price": 250,
+    "discount": 250,
+    "quantity": 2,
+    "off": 20
+  }
+]
