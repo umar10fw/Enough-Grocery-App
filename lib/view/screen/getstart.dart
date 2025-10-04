@@ -85,7 +85,7 @@ class _startState extends State<start> {
                               children: [
                                 Text('Welcome',style: fBold.copyWith(fontSize: 20)),
                                 SizedBox(width: 2.w,),
-                                Image.asset('assets/emojy.png',height: 3.h,)
+                                Image.asset('assets/images/emojy.png',height: 3.h,)
                               ],
                             ),
                             SizedBox(

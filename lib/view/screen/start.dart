@@ -78,7 +78,7 @@ class _StartState extends State<Start> {
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      opacity: 230,
+                      opacity: 0.3,
                       image: AssetImage('assets/images/bgimg.jpg',)
                   )
               ),
