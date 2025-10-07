@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533583165885",
+    "project_id": "login-app-d5d2c",
+    "storage_bucket": "login-app-d5d2c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533583165885:android:edc015bbedecdb3b6bfad4",
+        "android_client_info": {
+          "package_name": "com.example.egrocery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfP4T9-Yw9j7IW9lyw9dDpYtLhZuroF5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

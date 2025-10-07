@@ -1,5 +1,6 @@
 import 'package:egrocery/src/features/dashboard/screen/homepage/popular/popular_view.dart';
 import 'package:egrocery/src/features/dashboard/screen/homepage/slider/carous_slider.dart';
+import 'package:egrocery/src/repository/auth_repository/Authentication_Repository.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../constants/app_style/colorfile.dart';
@@ -49,7 +50,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Image.asset(
                           "assets/images/Icon awesome-bell.png",
                           height: 3.h,
-                        ))
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          AuthenticationRepository.instance.logOut();
+                        },
+                        icon: Icon(Icons.logout)
+                    ),
                   ],
                 ),
               )
