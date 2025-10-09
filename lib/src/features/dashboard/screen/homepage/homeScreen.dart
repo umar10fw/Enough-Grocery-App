@@ -1,7 +1,9 @@
 import 'package:egrocery/src/features/dashboard/screen/homepage/popular/popular_view.dart';
 import 'package:egrocery/src/features/dashboard/screen/homepage/slider/carous_slider.dart';
+import 'package:egrocery/src/features/profile_screen/profile_screen/profile_screen.dart';
 import 'package:egrocery/src/repository/auth_repository/Authentication_Repository.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../constants/app_style/colorfile.dart';
 import '../../../../constants/app_style/font.dart';
@@ -56,6 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           AuthenticationRepository.instance.logOut();
                         },
                         icon: Icon(Icons.logout)
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Get.to(ProfileScreen());
+                        },
+                        icon: Icon(Icons.menu)
                     ),
                   ],
                 ),

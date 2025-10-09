@@ -71,7 +71,10 @@
 //     super.onClose();
 //   }
 // }
+import 'package:egrocery/src/features/authentication/model/user_model/user_model.dart';
+import 'package:egrocery/src/features/dashboard/screen/homepage/homeScreen.dart';
 import 'package:egrocery/src/repository/auth_repository/Authentication_Repository.dart';
+import 'package:egrocery/src/repository/user_repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -83,6 +86,8 @@ class SignupController extends GetxController {
   final confirmPassword = TextEditingController();
   final fullName = TextEditingController();
   final phoneNo = TextEditingController();
+
+  final userRepo = Get.put(UserRepository());
 
   void registerUser() async {
     final userEmail = email.text.trim();
@@ -101,4 +106,14 @@ class SignupController extends GetxController {
       Get.snackbar("Error", e.toString());
     }
   }
+  Future<void> phoneAuthentication(String phoneNo) async {
+    await AuthenticationRepository.instance.phoneAuthentication(phoneNo);
+  }
+
+  Future<void> createUser(UserModel user) async {
+    await userRepo.createUser(user);
+    // phoneAuthentication(user.phoneNo);
+    Get.to(()=> HomeScreen());
+  }
+
 }

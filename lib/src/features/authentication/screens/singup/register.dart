@@ -1,16 +1,14 @@
-import 'package:egrocery/src/features/authentication/screens/singup/signup.dart';
-import 'package:egrocery/src/features/authentication/screens/singup/signup.dart';
-import 'package:egrocery/src/features/authentication/screens/singup/signup.dart';
+import 'package:egrocery/src/features/authentication/model/user_model/user_model.dart';
 import 'package:egrocery/src/features/dashboard/screen/homepage/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../../../common_widget/btn3.dart';
 import '../../../../constants/app_style/color.dart';
 import '../../../../constants/app_style/font.dart';
 import '../../controller/signup_controller/signup_controller.dart';
 import '../login/LoginScreen.dart';
+import '../otp_verified/otppassword.dart';
 class Register extends StatelessWidget {
   const Register({Key? key}) : super(key: key);
 
@@ -176,7 +174,57 @@ class Register extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 2.h),
-
+                      // PHONE NUMBER
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 15, right: 5),
+                              child: Icon(Icons.phone_android,
+                                  color: EColor.grey, size: 25),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: SizedBox(
+                                height: 40,
+                                child: Padding(
+                                  padding:
+                                  EdgeInsets.only(left: 5.0, right: 5.0),
+                                  child: TextFormField(
+                                    controller: controller.phoneNo,
+                                    decoration: InputDecoration(
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                        BorderSide(color: EColor.cGreen),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                        BorderSide(color: Colors.grey),
+                                      ),
+                                      hintText: "Phone",
+                                      hintStyle: fRagular.copyWith(
+                                        fontSize: 13,
+                                        color: EColor.grey,
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter phone';
+                                      }
+                                      if (!value.contains('')) {
+                                        return 'Enter a valid phone number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
                       // PASSWORD FIELD
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 25),
@@ -328,9 +376,21 @@ class Register extends StatelessWidget {
                 /// SIGNUP BUTTON
                 InkWell(
                   onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      controller.registerUser();
-                    }
+
+                    final user = UserModel(
+                        fullName: controller.fullName.text.trim(),
+                        email: controller.email.text.trim(),
+                        phoneNo: controller.phoneNo.text.trim(),
+                        password: controller.password.text.trim());
+                    SignupController.instance.createUser(user);
+
+
+                    // // if (_formKey.currentState!.validate()) {
+                    // //   // controller.registerUser();
+                    // //   controller.phoneAuthentication(controller.phoneNo.text.trim());
+                    // //   Get.to(OtpPassword());
+                    // // }
+                    // Get.to(HomeScreen());
                   },
                   child: Btn3(
                     text: "Sign Up",

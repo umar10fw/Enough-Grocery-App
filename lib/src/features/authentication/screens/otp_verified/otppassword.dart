@@ -1,3 +1,4 @@
+import 'package:egrocery/src/features/authentication/controller/otp_controller/otp_controller.dart';
 import 'package:egrocery/src/features/authentication/screens/otp_verified/verify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -19,6 +20,8 @@ class _OtpPasswordState extends State<OtpPassword> {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
+      var otpController = Get.put(OtpController());
+      var otp;
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -70,23 +73,18 @@ class _OtpPasswordState extends State<OtpPassword> {
                    showFieldAsBox: true,
                    onCodeChanged: (String code) {
                    },
-                   onSubmit: (String verificationCode){
-                     // showDialog(
-                     //     context: context,
-                     //     builder: (context){
-                     //       return AlertDialog(
-                     //         title: Text("Verification Code"),
-                     //         content: Text('Code entered is $verificationCode'),
-                     //       );
-                     //     }
-                     // );
+                   onSubmit: (code){
+                     otp = code;
+                     OtpController.instance.verifyOTP(otp);
                   }, // end onSubmit
                 ),
                 SizedBox(
                   height: 7.h,
                 ),
                 TextButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      OtpController.instance.verifyOTP(otp);
+                    },
                     child: Text(
                         "Resend OTP",style: fBold.copyWith(
                       color: EColor.primary,
