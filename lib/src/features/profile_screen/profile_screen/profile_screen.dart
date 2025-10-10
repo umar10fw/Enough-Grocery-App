@@ -1,3 +1,4 @@
+import 'package:egrocery/src/features/authentication/model/user_model/user_model.dart';
 import 'package:egrocery/src/features/profile_screen/profile_screen/update_profile_screen.dart';
 import 'package:egrocery/src/features/profile_screen/profile_screen/widget_screen/setting_feature_list.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
               }).toList(),
             ),
           ],
-        ),
+        )
       ),
     );
   }

@@ -1,6 +1,9 @@
+import 'package:egrocery/src/features/authentication/model/user_model/user_model.dart';
+import 'package:egrocery/src/features/authentication/model/profile_controller/profile_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../../constants/app_style/color.dart';
 import '../../../constants/app_style/font.dart';
 
@@ -9,6 +12,12 @@ class UpdateProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ProfileController());
+
+    // 👇 Dynamically get the logged-in Firebase user’s email
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final String? currentUserEmail = currentUser?.email;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -16,330 +25,135 @@ class UpdateProfileScreen extends StatelessWidget {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 5.h,
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/bgimg.jpg'),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 10,
-                    child: Container(
-                      height: 32,
-                      width: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: const Icon(Icons.camera, size: 18, color: Colors.black),
-                        onPressed: () {
-                          // Handle profile image change
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5.h,
-              ),
-              Form(
-                child: Column(
-                  children: [
-                    // USERNAME FIELD
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 15, right: 5),
-                            child: Icon(Icons.person,
-                                color: EColor.grey, size: 25),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              height: 40,
-                              child: Padding(
-                                padding:
-                                EdgeInsets.only(left: 5.0, right: 5.0),
-                                child: TextFormField(
-                                  // controller: controller.fullName,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: EColor.cGreen),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.grey),
-                                    ),
-                                    hintText: "User Name",
-                                    hintStyle: fRagular.copyWith(
-                                      fontSize: 13,
-                                      color: EColor.grey,
-                                    ),
-                                  ),
-                                  // validator: (value) {
-                                  //   if (value == null || value.isEmpty) {
-                                  //     return 'Please enter username';
-                                  //   }
-                                  //   return null;
-                                  // },
-                                ),
+      body: currentUserEmail == null
+          ? const Center(
+        child: Text("No user logged in. Please log in first."),
+      )
+          : SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
+        child: FutureBuilder<UserModel?>(
+          future: controller.getUserDetails(currentUserEmail),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text("No user data found"));
+            }
+
+            final user = snapshot.data!;
+            final email = TextEditingController(text: user.email);
+            final fullName = TextEditingController(text: user.fullName);
+            final phoneNo = TextEditingController(text: user.phoneNo);
+            final password = TextEditingController(text: user.password);
+
+            return Column(
+              children: [
+                SizedBox(height: 5.h),
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/images/bgimg.jpg'),
+                ),
+                SizedBox(height: 5.h),
+
+                // ✅ FORM
+                Form(
+                  child: Column(
+                    children: [
+                      buildTextField(Icons.person, "User Name", fullName),
+                      SizedBox(height: 2.h),
+                      buildTextField(Icons.email, "Email", email),
+                      SizedBox(height: 2.h),
+                      buildTextField(Icons.phone_android, "Phone", phoneNo),
+                      SizedBox(height: 2.h),
+                      buildTextField(Icons.lock_outline, "Password", password, obscure: true),
+                      SizedBox(height: 5.h),
+
+                      // ✅ Update Button
+                      Padding(
+                        padding: const EdgeInsets.all(19),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final updatedUser = UserModel(
+                                id: user.id, // 👈 Required for Firestore update
+                                email: email.text.trim(),
+                                fullName: fullName.text.trim(),
+                                phoneNo: phoneNo.text.trim(),
+                                password: password.text.trim(),
+                              );
+
+                              await controller.updateUserRecord(updatedUser);
+                              Get.snackbar(
+                                "Success",
+                                "Profile Updated Successfully",
+                                backgroundColor: Colors.green.withOpacity(0.1),
+                                colorText: Colors.green,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.yellow,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
+                              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    // EMAIL FIELD
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 15, right: 5),
-                            child: Icon(Icons.email,
-                                color: EColor.grey, size: 25),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              height: 40,
-                              child: Padding(
-                                padding:
-                                EdgeInsets.only(left: 5.0, right: 5.0),
-                                child: TextFormField(
-                                  // controller: controller.email,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: EColor.cGreen),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.grey),
-                                    ),
-                                    hintText: "Email",
-                                    hintStyle: fRagular.copyWith(
-                                      fontSize: 13,
-                                      color: EColor.grey,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter email';
-                                    }
-                                    if (!value.contains('@')) {
-                                      return 'Enter a valid email';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                            child: const Text(
+                              "Edit Profile",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    // PHONE NUMBER
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 15, right: 5),
-                            child: Icon(Icons.phone_android,
-                                color: EColor.grey, size: 25),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              height: 40,
-                              child: Padding(
-                                padding:
-                                EdgeInsets.only(left: 5.0, right: 5.0),
-                                child: TextFormField(
-                                  // controller: controller.phoneNo,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: EColor.cGreen),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.grey),
-                                    ),
-                                    hintText: "Phone",
-                                    hintStyle: fRagular.copyWith(
-                                      fontSize: 13,
-                                      color: EColor.grey,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter phone';
-                                    }
-                                    if (!value.contains('')) {
-                                      return 'Enter a valid phone number';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    // PASSWORD FIELD
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 15, right: 5),
-                            child: Icon(Icons.lock_outline,
-                                color: EColor.grey, size: 25),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              height: 40,
-                              child: Padding(
-                                padding:
-                                EdgeInsets.only(left: 5.0, right: 5.0),
-                                child: TextFormField(
-                                  // controller: controller.password,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: EColor.cGreen),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: Colors.grey),
-                                    ),
-                                    suffixIcon: Icon(
-                                      Icons.visibility_off_outlined,
-                                      color: EColor.grey,
-                                      size: 17,
-                                    ),
-                                    hintText: "Password",
-                                    hintStyle: fRagular.copyWith(
-                                      fontSize: 13,
-                                      color: EColor.grey,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter password';
-                                    }
-                                    if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    // 🟡 Edit Profile Button
-                    Padding(
-                      padding: const EdgeInsets.all(19),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle edit profile
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.yellow,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            "Edit Profile",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    // 🧾 Joined Date + Delete Button Row
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Joined 31 October 2022",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              // Handle delete action
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.red.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                            ),
-                            child: const Text(
-                              "Delete",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildTextField(IconData icon, String hint, TextEditingController controller, {bool obscure = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 15, right: 5),
+            child: Icon(icon, color: EColor.grey, size: 25),
+          ),
+          Expanded(
+            child: SizedBox(
+              height: 40,
+              child: TextFormField(
+                controller: controller,
+                obscureText: obscure,
+                decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: EColor.cGreen),
+                  ),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  hintText: hint,
+                  hintStyle: fRagular.copyWith(fontSize: 13, color: EColor.grey),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
