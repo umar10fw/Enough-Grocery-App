@@ -80,5 +80,9 @@ class AuthenticationRepository extends GetxController {
     } catch (_) {}
   }
 
+  Future<void> sendEmailVerification() async {
+    await _auth.currentUser?.sendEmailVerification();
+  }
+
   Future<void> logOut() async => await _auth.signOut();
 }
